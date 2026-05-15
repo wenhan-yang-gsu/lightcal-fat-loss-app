@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LightCal Fat Loss Coach</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="应用导航" data-i18n-aria-label="appNavigation">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M5 13c0-4.42 3.58-8 8-8h4v4c0 4.42-3.58 8-8 8H5v-4Z" />
+              <path d="M6 18c3.6-.2 7.1-2.05 10.5-5.55" />
+            </svg>
+          </div>
+          <div>
+            <strong data-i18n="brandName">轻卡</strong>
+            <span data-i18n="brandSubtitle">智能减脂助手</span>
+          </div>
+        </div>
+
+        <nav class="nav-tabs" aria-label="主要页面" data-i18n-aria-label="mainPages">
+          <button class="nav-tab active" data-tab="dashboard" type="button">
+            <span class="tab-icon" aria-hidden="true">⌂</span>
+            <span data-i18n="navToday">今日</span>
+          </button>
+          <button class="nav-tab" data-tab="photo" type="button">
+            <span class="tab-icon" aria-hidden="true">◎</span>
+            <span data-i18n="navPhoto">拍照</span>
+          </button>
+          <button class="nav-tab" data-tab="log" type="button">
+            <span class="tab-icon" aria-hidden="true">≡</span>
+            <span data-i18n="navLog">记录</span>
+          </button>
+          <button class="nav-tab" data-tab="profile" type="button">
+            <span class="tab-icon" aria-hidden="true">◌</span>
+            <span data-i18n="navProfile">身体</span>
+          </button>
+        </nav>
+      </aside>
+
+      <main>
+        <header class="topbar">
+          <div>
+            <p class="eyebrow" data-i18n="todayDeficit">今天的热量缺口</p>
+            <h1 id="dayTitle">轻松知道还能吃多少</h1>
+          </div>
+          <div class="topbar-actions">
+            <label class="language-picker">
+              <span data-i18n="languageLabel">语言</span>
+              <select id="languageSelect" aria-label="Language">
+                <option value="zh">中文</option>
+                <option value="en">English</option>
+                <option value="ja">日本語</option>
+                <option value="es">Español</option>
+              </select>
+            </label>
+            <div class="date-picker">
+            <button class="icon-button" id="prevDay" type="button" aria-label="前一天">‹</button>
+            <input id="activeDate" type="date" />
+            <button class="icon-button" id="nextDay" type="button" aria-label="后一天">›</button>
+            </div>
+          </div>
+        </header>
+
+        <section class="tab-panel active" id="dashboard">
+          <section class="insight-hero" aria-label="今日减脂概览" data-i18n-aria-label="todayOverview">
+            <div class="hero-copy">
+              <span class="hero-kicker">Smart Calorie Coach</span>
+              <h2 data-i18n="heroTitle">拍照记录、确认份量、看清今天的热量缺口</h2>
+              <p data-i18n="heroText">复杂餐盘会拆成多个食物项估算，确认后再计入当天记录。越常修正，结果越贴近你的真实饮食。</p>
+              <div class="hero-badges" aria-label="今日训练提示" data-i18n-aria-label="todayTips">
+                <span data-i18n="heroBadge1">扩展食物库</span>
+                <span data-i18n="heroBadge2">复合餐盘估算</span>
+                <span data-i18n="heroBadge3">可手动校准</span>
+              </div>
+            </div>
+            <div class="meal-visual" aria-hidden="true">
+              <div class="plate">
+                <span class="plate-protein"></span>
+                <span class="plate-carb"></span>
+                <span class="plate-greens"></span>
+                <span class="plate-sauce"></span>
+              </div>
+              <div class="scan-card">
+                <strong data-i18n="scanTitle">Estimate</strong>
+                <span data-i18n="scanText">食物 · 份量 · 热量</span>
+              </div>
+            </div>
+          </section>
+
+          <div class="summary-grid">
+            <section class="deficit-panel">
+              <div class="gauge" aria-label="今日热量进度" data-i18n-aria-label="calorieProgress">
+                <svg viewBox="0 0 180 180">
+                  <circle class="gauge-track" cx="90" cy="90" r="72" />
+                  <circle class="gauge-value" id="gaugeValue" cx="90" cy="90" r="72" />
+                </svg>
+                <div class="gauge-copy">
+                  <span id="deficitLabel">--</span>
+                  <strong id="deficitValue">0</strong>
+                  <small data-i18n="kcalDeficit">kcal 缺口</small>
+                </div>
+              </div>
+              <div class="daily-note" id="dailyNote">填写身体信息后会计算你的目标热量。</div>
+            </section>
+
+            <section class="metric-card">
+              <span data-i18n="intake">摄入</span>
+              <strong id="intakeMetric">0</strong>
+              <small>kcal</small>
+            </section>
+            <section class="metric-card">
+              <span data-i18n="targetIntake">目标摄入</span>
+              <strong id="targetMetric">0</strong>
+              <small>kcal</small>
+            </section>
+            <section class="metric-card">
+              <span data-i18n="totalBurn">总消耗</span>
+              <strong id="burnMetric">0</strong>
+              <small>kcal</small>
+            </section>
+          </div>
+
+          <div class="two-column">
+            <section class="panel">
+              <div class="panel-heading">
+                <h2 data-i18n="macroStructure">营养结构</h2>
+                <span id="macroTotal">0 kcal</span>
+              </div>
+              <div class="macro-list">
+                <div class="macro-row">
+                  <div>
+                    <span data-i18n="protein">蛋白质</span>
+                    <strong id="proteinText">0g</strong>
+                  </div>
+                  <meter id="proteinMeter" min="0" max="180" value="0"></meter>
+                </div>
+                <div class="macro-row">
+                  <div>
+                    <span data-i18n="carbs">碳水</span>
+                    <strong id="carbsText">0g</strong>
+                  </div>
+                  <meter id="carbsMeter" min="0" max="300" value="0"></meter>
+                </div>
+                <div class="macro-row">
+                  <div>
+                    <span data-i18n="fat">脂肪</span>
+                    <strong id="fatText">0g</strong>
+                  </div>
+                  <meter id="fatMeter" min="0" max="100" value="0"></meter>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-heading">
+                <h2 data-i18n="projectionTitle">减脂预测</h2>
+                <span id="projectionPace">--</span>
+              </div>
+              <div class="projection">
+                <div>
+                  <span data-i18n="avgDeficit7">7 日平均缺口</span>
+                  <strong id="avgDeficit">0 kcal</strong>
+                </div>
+                <div>
+                  <span data-i18n="weeklyChange">预计每周变化</span>
+                  <strong id="weeklyLoss">0 kg</strong>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="photo">
+          <div class="capture-layout">
+            <section class="panel capture-panel">
+              <div class="panel-heading">
+                <h2 data-i18n="uploadTitle">上传餐食照片</h2>
+                <span data-i18n="uploadSubtitle">先估算，再确认</span>
+              </div>
+              <label class="upload-zone" for="foodPhoto">
+                <input id="foodPhoto" type="file" accept="image/*" capture="environment" />
+                <img id="photoPreview" alt="" hidden />
+                <div id="uploadPrompt">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 7h3l1.4-2h7.2L17 7h3v12H4V7Z" />
+                    <circle cx="12" cy="13" r="3.5" />
+                  </svg>
+                  <strong data-i18n="uploadPromptTitle">选择或拍摄食物照片</strong>
+                  <span data-i18n="uploadPromptText">可根据文件名关键词给出初步识别，也能手动选择食物</span>
+                </div>
+              </label>
+              <button class="primary-button" id="detectButton" type="button" data-i18n="detectButton">识别并估算</button>
+            </section>
+
+            <section class="panel template-panel">
+              <div class="panel-heading">
+                <h2 data-i18n="templateTitle">免费套餐模板</h2>
+                <span data-i18n="templateSubtitle">一键填入，自己微调</span>
+              </div>
+              <div class="template-grid" id="templateGrid"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-heading">
+                <h2 data-i18n="estimateTitle">估算结果</h2>
+                <span id="confidenceText" data-i18n="localFoodLibrary">本地食物库</span>
+              </div>
+              <div class="estimate-status" id="estimateStatus">
+                <span data-i18n="freeModeStatus">免费公开版使用本地食物库和套餐模板估算。照片可作为记录参考，热量请手动确认。</span>
+              </div>
+              <div class="form-grid meal-row-head">
+                <label>
+                  <span data-i18n="mealLabel">餐次</span>
+                  <select id="mealType">
+                    <option value="早餐">早餐</option>
+                    <option value="午餐" selected>午餐</option>
+                    <option value="晚餐">晚餐</option>
+                    <option value="加餐">加餐</option>
+                  </select>
+                </label>
+                <datalist id="foodOptions"></datalist>
+              </div>
+
+              <div class="meal-builder" id="mealBuilder"></div>
+
+              <div class="builder-actions">
+                <button class="text-button" id="addMealItemButton" type="button" data-i18n="addItem">添加食物</button>
+              </div>
+
+              <div class="nutrition-preview">
+                <div><span data-i18n="totalCalories">总热量</span><strong id="previewCalories">0 kcal</strong></div>
+                <div><span data-i18n="protein">蛋白质</span><strong id="previewProtein">0g</strong></div>
+                <div><span data-i18n="carbs">碳水</span><strong id="previewCarbs">0g</strong></div>
+                <div><span data-i18n="fat">脂肪</span><strong id="previewFat">0g</strong></div>
+              </div>
+
+              <button class="primary-button" id="addFoodButton" type="button" data-i18n="addMeal">加入今日记录</button>
+            </section>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="log">
+          <section class="panel">
+            <div class="panel-heading">
+              <h2 data-i18n="todayMeals">今日饮食</h2>
+              <button class="text-button" id="clearDayButton" type="button" data-i18n="clearDay">清空当天</button>
+            </div>
+            <div class="meal-groups" id="mealGroups"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-heading">
+              <h2 data-i18n="quickAdd">快速添加</h2>
+              <span data-i18n="commonScenes">常见饮食场景</span>
+            </div>
+            <div class="template-grid" id="logTemplateGrid"></div>
+          </section>
+        </section>
+
+        <section class="tab-panel" id="profile">
+          <div class="two-column profile-grid">
+            <section class="panel">
+              <div class="panel-heading">
+                <h2 data-i18n="profileTitle">身体信息</h2>
+                <span>BMR / TDEE</span>
+              </div>
+              <form class="form-grid" id="profileForm">
+                <label>
+                  <span data-i18n="genderLabel">性别</span>
+                  <select id="gender">
+                    <option value="female" data-i18n="female">女</option>
+                    <option value="male" data-i18n="male">男</option>
+                  </select>
+                </label>
+                <label>
+                  <span data-i18n="ageLabel">年龄</span>
+                  <input id="age" type="number" min="12" max="90" value="28" />
+                </label>
+                <label>
+                  <span data-i18n="heightLabel">身高 cm</span>
+                  <input id="height" type="number" min="120" max="230" value="165" />
+                </label>
+                <label>
+                  <span data-i18n="weightLabel">当前体重 kg</span>
+                  <input id="weight" type="number" min="30" max="250" step="0.1" value="65" />
+                </label>
+                <label>
+                  <span data-i18n="goalWeightLabel">目标体重 kg</span>
+                  <input id="goalWeight" type="number" min="30" max="250" step="0.1" value="58" />
+                </label>
+                <label>
+                  <span data-i18n="activityLabel">活动水平</span>
+                  <select id="activity">
+                    <option value="1.2" data-i18n="activitySedentary">久坐少动</option>
+                    <option value="1.375" selected data-i18n="activityLight">轻度活动</option>
+                    <option value="1.55" data-i18n="activityModerate">中度活动</option>
+                    <option value="1.725" data-i18n="activityHigh">高强度活动</option>
+                  </select>
+                </label>
+                <label>
+                  <span data-i18n="exerciseLabel">今日运动 kcal</span>
+                  <input id="exercise" type="number" min="0" step="10" value="0" />
+                </label>
+                <label>
+                  <span data-i18n="paceLabel">减脂速度</span>
+                  <select id="pace">
+                    <option value="300" data-i18n="paceGentle">温和：每日缺口 300</option>
+                    <option value="500" selected data-i18n="paceStandard">标准：每日缺口 500</option>
+                    <option value="700" data-i18n="paceAggressive">积极：每日缺口 700</option>
+                  </select>
+                </label>
+              </form>
+              <div class="activity-presets" aria-label="常见运动消耗快捷选择" data-i18n-aria-label="activityPresets">
+                <button type="button" data-exercise="120" data-i18n="walkPreset">轻松散步 120</button>
+                <button type="button" data-exercise="260" data-i18n="strengthPreset">力量训练 260</button>
+                <button type="button" data-exercise="420" data-i18n="runPreset">慢跑有氧 420</button>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-heading">
+                <h2 data-i18n="resultsTitle">计算结果</h2>
+                <span>Mifflin-St Jeor</span>
+              </div>
+              <div class="result-list">
+                <div><span data-i18n="bmr">基础代谢</span><strong id="bmrResult">0 kcal</strong></div>
+                <div><span data-i18n="dailyBurn">日常总消耗</span><strong id="tdeeResult">0 kcal</strong></div>
+                <div><span data-i18n="suggestedIntake">建议摄入</span><strong id="targetResult">0 kcal</strong></div>
+                <div><span data-i18n="goalGapLabel">目标差距</span><strong id="goalGap">0 kg</strong></div>
+              </div>
+              <p class="helper-text">
+                <span data-i18n="profileHelper">图片识别热量天然有误差，建议把识别结果当成初稿。真正影响长期结果的是每天能快速确认、持续记录。</span>
+              </p>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <template id="foodItemTemplate">
+      <article class="food-item">
+        <div>
+          <strong class="food-name"></strong>
+          <span class="food-meta"></span>
+        </div>
+        <div class="food-actions">
+          <span class="food-kcal"></span>
+          <button class="icon-button remove-food" type="button" aria-label="删除" data-i18n-aria-label="delete">×</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
